@@ -7,7 +7,7 @@ module Capistrano
       class Opsworks < Base
         def deploy!
           if exists?(:aws_key_id) && exists?(:aws_secret_key)
-            AWS.config({
+            Aws.config({
               :access_key_id => configuration[:aws_key_id],
               :secret_access_key => configuration[:aws_secret_key],
             })
@@ -15,7 +15,7 @@ module Capistrano
             abort "aws_key_id and aws_secret_key are required"
           end
 
-          opsworks = AWS::OpsWorks.new
+          opsworks = Aws::OpsWorks::Client.new()
 
           if exists?(:stack_id) && exists?(:app_id) && exists?(:command_name)
             valid_options = [
@@ -45,7 +45,7 @@ module Capistrano
             abort "command_name, app_id, and stack_id are required"
           end
 
-          opsworks.client.create_deployment(aws_params)
+          opsworks.create_deployment(aws_params)
         end
 
         def check!
